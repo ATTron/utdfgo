@@ -3,8 +3,8 @@ package utdfgo
 import "fmt"
 
 func main() {
-	utdf := run("")
+	utdf := Run("")
 	for _, p := range utdf {
-		fmt.Println(p.toString())
+		fmt.Println(p.ToString())
 	}
 }
