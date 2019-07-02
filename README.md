@@ -1,4 +1,5 @@
 # UTDF-GO
+[![Go Report Card](https://goreportcard.com/badge/github.com/attron/utdfgo)](https://goreportcard.com/report/github.com/attron/utdfgo)
 UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
 
 # USAGE

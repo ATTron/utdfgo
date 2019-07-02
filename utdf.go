@@ -1,3 +1,5 @@
+// Package utdfgo overview
+// Spacecraft UTDF Packet Decoder
 package utdfgo
 
 import (
@@ -164,14 +166,14 @@ func (utdf UTDF) GetPADID() int8 {
 	return int8(pid)
 }
 
-// GetRecieveAntennaType get recieve antenna type
+// GetRecieveAntennaType get receive antenna type
 // taken from byte 47
 func (utdf UTDF) GetRecieveAntennaType() byte {
 	at := utdf[46]
 	return at
 }
 
-// GetRecievePADID get recieve antenna padid
+// GetRecievePADID get receive antenna padid
 // taken from byte 48
 func (utdf UTDF) GetRecievePADID() int8 {
 	pid := utdf[45]
