@@ -1,18 +1,17 @@
 # UTDF-GO
-UTDF-GO is a golang decoder used to extract information out of 
-UTDF Packets
+UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
 
 # USAGE
 ```
-    go get "github.com/ATTron/utdf-go"
+    go get "github.com/ATTron/utdfgo"
 ```
 ------------------------------------------------------------------
 ```
-    import "github.com/ATTron/utdf-go"
+    import "github.com/ATTron/utdfgo"
 
     . . .
 
-    utdf := run(filename)
+    utdf := utdfgo.Run(filename)
     for _, p := range utdf {
         // run functions on p
     }
@@ -22,75 +21,75 @@ You can run the extraction functions with the returned utdf struct
 # Functions
 
 ## Getting Started
-#### run(filename string)
+#### Run(filename string)
 returns an array of utdf packets from the file given
 
 ------------------------------------------------------------------
 ## Time Based Functions
-#### getYear()
+#### GetYear()
 returns the year
 taken from byte 6
-#### getSeconds()
+#### GetSeconds()
 returns the seconds of year
 taken from bytes 11:14
-#### getMicroseconds()
+#### GetMicroseconds()
 returns microseconds of seconds
 taken from bytes 15:18
-#### getEpoch()
+#### GetEpoch()
 returns a UTC epoch
 built from other time functions
-#### getTimestamps()
+#### GetTimestamps()
 returns all time information for given utdf packet
 
 ------------------------------------------------------------------
 ## Angle Based Functions
-#### getAzimuth()
+#### GetAzimuth()
 returns azimuth
 taken from bytes 19:22
-#### getElevation()
+#### GetElevation()
 returns elevation
 taken from bytes 23:26
 
 ------------------------------------------------------------------
 ## Range + Doppler Based Functions
-#### getRangeDelay()
+#### GetRangeDelay()
 returns range delay hi and lo
-#### getRange()
+#### GetRange()
 returns calculated range of spacecraft
-#### getDopplerDelay()
+#### GetDopplerDelay()
 returns doppler delay hi and lo
-#### getDoppler()
+#### GetDoppler()
 returns calculated doppler count
 
 ------------------------------------------------------------------
 ## Misc Functions
-#### getAGC()
+#### GetAGC()
 returns spacecraft AGC
 taken from bytes 39:40
-#### getTransmitFreq()
+#### GetTransmitFreq()
 returns transmission frequency
 taken from bytes 41:44
-#### getAntennaType()
+#### GetAntennaType()
 returns antenna type
 taken from byte 45
-#### getPADID()
+#### GetPADID()
 returns antenna padid
 taken from byte 46
-#### getRecieveAntennaType()
+#### GetRecieveAntennaType()
 returns recieve antenna type
 taken from byte 47
-#### getRecievePADID()
+#### GetRecievePADID()
 returns recieve antenna padid
 taken from byte 48
-#### getSystemMode()
+#### GetSystemMode()
 return system mode
 taken from bytes 49:50
-#### getDataValidation()
+#### GetDataValidation()
 return data validity
 taken from byte 51
-#### getFrequencyBand()
+#### GetFrequencyBand()
 return frequency band
 taken from byte 52
-#### getTrackingInfo()
+#### GetTrackingInfo()
 return tracking type and data
 taken from bytes 53:54

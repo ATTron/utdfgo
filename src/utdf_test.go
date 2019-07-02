@@ -64,7 +64,7 @@ func TestBuildUTDF(t *testing.T) {
 
 // ensure the first 13 bytes are correct
 func TestUTDFHeader(t *testing.T) {
-	p := run("utdf")
+	p := Run("utdf")
 	op := p[0]
 
 	// make sure utdf packet is 75 bytes
@@ -73,8 +73,8 @@ func TestUTDFHeader(t *testing.T) {
 	}
 
 	// packet year
-	if op.getYear() != 2000+int(+packet.YY) {
-		t.Error("Unexpected Year:", op.getYear())
+	if op.GetYear() != 2000+int(+packet.YY) {
+		t.Error("Unexpected Year:", op.GetYear())
 	}
 
 	// packet router
@@ -83,22 +83,22 @@ func TestUTDFHeader(t *testing.T) {
 	}
 
 	// packet SIC
-	if op.getSIC() != uint64(packet.sic) {
-		t.Error("Unexpected SIC:", op.getSIC())
+	if op.GetSIC() != uint64(packet.sic) {
+		t.Error("Unexpected SIC:", op.GetSIC())
 	}
 
 	// packet VID
-	if op.getVID() != uint64(packet.vid) {
-		t.Error("Unexpected VID:", op.getVID())
+	if op.GetVID() != uint64(packet.vid) {
+		t.Error("Unexpected VID:", op.GetVID())
 	}
 
 	// packet seconds
-	if op.getSeconds() != int(packet.scY) {
-		t.Error("Unexpected seconds of year:", op.getSeconds())
+	if op.GetSeconds() != int(packet.scY) {
+		t.Error("Unexpected seconds of year:", op.GetSeconds())
 	}
 
 	// packet microseconds
-	if op.getMicroseconds() != int(packet.mcS) {
-		t.Error("Unexpected microseconds:", op.getMicroseconds())
+	if op.GetMicroseconds() != int(packet.mcS) {
+		t.Error("Unexpected microseconds:", op.GetMicroseconds())
 	}
 }

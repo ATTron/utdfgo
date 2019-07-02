@@ -22,8 +22,8 @@ const bufferSize = 75
 // UTDF data type creation
 type UTDF []byte
 
-// read in entire file then chunk into utdf packets
-func run(filename string) []UTDF {
+// Run read in entire file then chunk into utdf packets
+func Run(filename string) []UTDF {
 	var utdfArr []UTDF
 	utdfFile, err := ioutil.ReadFile(filename)
 	check(err)
@@ -41,9 +41,9 @@ func run(filename string) []UTDF {
 
 // START TIME BASED FUNCTIONS
 
-// gets last two digits of current year
+// GetYear gets last two digits of current year
 // taken from byte 6
-func (utdf UTDF) getYear() int {
+func (utdf UTDF) GetYear() int {
 	year := int(utdf[5])
 	if year < 70 {
 		year += 2000
@@ -53,47 +53,47 @@ func (utdf UTDF) getYear() int {
 	return year
 }
 
-// get seconds of year
+// GetSeconds get seconds of year
 // taken from bytes 11:14
-func (utdf UTDF) getSeconds() int {
+func (utdf UTDF) GetSeconds() int {
 	scY := (int(utdf[10]) << 24) + (int(utdf[11]) << 16) + (int(utdf[12]) << 8) + int(utdf[13])
 	return scY
 }
 
-// get microseconds of seconds
+// GetMicroseconds get microseconds of seconds
 // taken from bytes 15:18
-func (utdf UTDF) getMicroseconds() int {
+func (utdf UTDF) GetMicroseconds() int {
 	mcS := (int(utdf[14]) << 24) + (int(utdf[15]) << 16) + (int(utdf[16]) << 8) + int(utdf[17])
 	return mcS
 }
 
-// create UTC epoch
-func (utdf UTDF) getEpoch() int64 {
-	ytd := time.Date(utdf.getYear(), 1, 1, 0, 0, 0, 0, time.UTC).Unix()
-	epoch := int(ytd) + utdf.getSeconds() + utdf.getMicroseconds()/1000000
+// GetEpoch create UTC epoch
+func (utdf UTDF) GetEpoch() int64 {
+	ytd := time.Date(utdf.GetYear(), 1, 1, 0, 0, 0, 0, time.UTC).Unix()
+	epoch := int(ytd) + utdf.GetSeconds() + utdf.GetMicroseconds()/1000000
 	return int64(epoch)
 }
 
-// gets timestamp from utdf packet
-func (utdf UTDF) getTimestamps() string {
-	return fmt.Sprintf("Year: %d, Epoch: %d, Seconds: %d, Microseconds: %d", utdf.getYear(), utdf.getEpoch(), utdf.getSeconds(), utdf.getMicroseconds())
+// GetTimestamps gets timestamp from utdf packet
+func (utdf UTDF) GetTimestamps() string {
+	return fmt.Sprintf("Year: %d, Epoch: %d, Seconds: %d, Microseconds: %d", utdf.GetYear(), utdf.GetEpoch(), utdf.GetSeconds(), utdf.GetMicroseconds())
 }
 
 // END TIME BASED FUNCTIONS
 
 // START ANGLE + ELEVATION BASED FUNCTIONS
 
-// get angle_data[0] and calculate azimuth
+// GetAzimuth get angle_data[0] and calculate azimuth
 // taken from bytes 19:22
-func (utdf UTDF) getAzimuth() float64 {
+func (utdf UTDF) GetAzimuth() float64 {
 	azi := (int(utdf[18]) << 24) + (int(utdf[19]) << 16) + (int(utdf[20]) << 8) + int(utdf[21])
 	aAngle := calculateAngle(azi)
 	return aAngle
 }
 
-// get angle_data[1] and calculate elevation
+// GetElevation get angle_data[1] and calculate elevation
 // taken from bytes 23-26
-func (utdf UTDF) getElevation() float64 {
+func (utdf UTDF) GetElevation() float64 {
 	e := (int(utdf[22]) << 24) + (int(utdf[23]) << 16) + (int(utdf[24]) << 8) + int(utdf[25])
 	eAngle := calculateAngle(e)
 	return eAngle
@@ -102,30 +102,31 @@ func (utdf UTDF) getElevation() float64 {
 // END ANGLE + ELEVATION BASED FUNCTIONS
 
 // START RANGE + DOPPLER BASED FUNCTIONS
-// calculate range delay hi low count
-func (utdf UTDF) getRangeDelay() (float64, float64) {
+
+// GetRangeDelay calculate range delay hi low count
+func (utdf UTDF) GetRangeDelay() (float64, float64) {
 	rd := (int(utdf[26]) << 40) + (int(utdf[27]) << 32) + (int(utdf[28]) << 24) + (int(utdf[29]) << 16) + (int(utdf[30]) << 8) + int(utdf[31])
 	rdHi, rdLo := calculateRD(rd)
 	return float64(rdHi), float64(rdLo)
 }
 
-// calculate spacecraft range
-func (utdf UTDF) getRange() float64 {
-	rh, rl := utdf.getRangeDelay()
+// GetRange calculate spacecraft range
+func (utdf UTDF) GetRange() float64 {
+	rh, rl := utdf.GetRangeDelay()
 	r := (((rh + rl) - 0) * float64(sol) / 2000000)
 	return r
 }
 
-// get doppler hi low count
-func (utdf UTDF) getDopplerDelay() (float64, float64) {
+// GetDopplerDelay get doppler hi low count
+func (utdf UTDF) GetDopplerDelay() (float64, float64) {
 	d := (int(utdf[32]) << 40) + (int(utdf[33]) << 32) + (int(utdf[34]) << 24) + (int(utdf[35]) << 16) + (int(utdf[36]) << 8) + int(utdf[37])
 	dHi, dLo := calculateRD(d)
 	return float64(dHi), float64(dLo)
 }
 
-// get spacecraft doppler count
-func (utdf UTDF) getDoppler() float64 {
-	dh, dl := utdf.getDopplerDelay()
+// GetDoppler get spacecraft doppler count
+func (utdf UTDF) GetDoppler() float64 {
+	dh, dl := utdf.GetDopplerDelay()
 	d := (((dh + dl) - 0) * float64(sol) / 2000000)
 	return d
 }
@@ -133,80 +134,82 @@ func (utdf UTDF) getDoppler() float64 {
 // END RANGE BASED FUNCTIONS
 
 // START MISC FUNCTIONS
-// get AGC
+
+// GetAGC get AGC
 // taken from bytes 39:40
-func (utdf UTDF) getAGC() float32 {
+func (utdf UTDF) GetAGC() float32 {
 	agc := (int(utdf[38]) << 8) + int(utdf[39])
 	return float32(agc)
 }
 
-// get transmit frequency
+// GetTransmitFreq get transmit frequency
 // taken from bytes 41:44
-func (utdf UTDF) getTransmitFreq() string {
+func (utdf UTDF) GetTransmitFreq() string {
 	tf := (int(utdf[40]) << 24) + (int(utdf[41]) << 16) + (int(utdf[42]) << 8) + int(utdf[43])
 	hz := float64(tf) * 10
 	return fmt.Sprintf("%1.10v", hz)
 }
 
-// get antenna type
+// GetAntennaType get antenna type
 // taken from byte 45
-func (utdf UTDF) getAntennaType() byte {
+func (utdf UTDF) GetAntennaType() byte {
 	at := utdf[44]
 	return at
 }
 
-// get antenna padid
+// GetPADID get antenna padid
 // taken from byte 46
-func (utdf UTDF) getPADID() int8 {
+func (utdf UTDF) GetPADID() int8 {
 	pid := utdf[45]
 	return int8(pid)
 }
 
-// get recieve antenna type
+// GetRecieveAntennaType get recieve antenna type
 // taken from byte 47
-func (utdf UTDF) getRecieveAntennaType() byte {
+func (utdf UTDF) GetRecieveAntennaType() byte {
 	at := utdf[46]
 	return at
 }
 
-// get recieve antenna padid
+// GetRecievePADID get recieve antenna padid
 // taken from byte 48
-func (utdf UTDF) getRecievePADID() int8 {
+func (utdf UTDF) GetRecievePADID() int8 {
 	pid := utdf[45]
 	return int8(pid)
 }
 
-// get system mode
+// GetSystemMode get system mode
 // taken from bytes 49:50
-func (utdf UTDF) getSystemMode() int {
+func (utdf UTDF) GetSystemMode() int {
 	m := (int(utdf[48]) << 8) + int(utdf[49])
 	return m
 }
 
-// get data validity
+// GetDataValidation get data validity
 // taken from byte 51
-func (utdf UTDF) getDataValidation() byte {
+func (utdf UTDF) GetDataValidation() byte {
 	dv := utdf[50]
 	return dv
 }
 
-// get frequency band
+// GetFrequencyBand get frequency band
 // taken from byte 52
-func (utdf UTDF) getFrequencyBand() byte {
+func (utdf UTDF) GetFrequencyBand() byte {
 	fb := utdf[51]
 	return fb
 }
 
-// get tracking type and data
+// GetTrackingInfo get tracking type and data
 // taken from bytes 53:54
-func (utdf UTDF) getTrackingInfo() int {
+func (utdf UTDF) GetTrackingInfo() int {
 	ti := (int(utdf[52]) << 8) + int(utdf[53])
 	return ti
 }
 
 // END MISC FUNCTIONS
 
-func (utdf UTDF) getSIC() uint64 {
+// GetSIC get spacecraft ID
+func (utdf UTDF) GetSIC() uint64 {
 	sic := utdf[6:8]
 	sicE := hex.EncodeToString(sic)
 	n, err := strconv.ParseUint(sicE, 16, 16)
@@ -214,7 +217,8 @@ func (utdf UTDF) getSIC() uint64 {
 	return n
 }
 
-func (utdf UTDF) getVID() uint64 {
+// GetVID get vehicle ID
+func (utdf UTDF) GetVID() uint64 {
 	vid := utdf[9:10]
 	vidE := hex.EncodeToString(vid)
 	n, err := strconv.ParseUint(vidE, 16, 16)
@@ -222,7 +226,7 @@ func (utdf UTDF) getVID() uint64 {
 	return n
 }
 
-// currently just used for testing correct return values
-func (utdf UTDF) toString() string {
-	return fmt.Sprintf("%s\t\t%1.15v\t%1.15v\t%1.15v", utdf.getTimestamps(), utdf.getAzimuth(), utdf.getElevation(), utdf.getRange())
+// ToString currently just used for testing correct return values
+func (utdf UTDF) ToString() string {
+	return fmt.Sprintf("%s\t\t%1.15v\t%1.15v\t%1.15v", utdf.GetTimestamps(), utdf.GetAzimuth(), utdf.GetElevation(), utdf.GetRange())
 }
