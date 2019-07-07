@@ -27,7 +27,11 @@ the release folder
 **Currently only works on linux + macOS
 #### Using Makefile
 ```
-    make install-linux-mac
+    make install-linux
+```
+OR
+```
+    make install-mac
 ```
 #### Using Binary
 ```

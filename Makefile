@@ -6,6 +6,10 @@ create:
 	GOOS=linux go build -o ../release/linux/utdf && \
 	go build -o ../release/mac/utdf
 
-install-linux-mac:
+install-linux:
 	cd ./release && \
-	cp utdf /usr/local/bin
+	cp ./linux/utdf /usr/local/bin
+
+install-mac:
+	cd ./release && \
+	cp ./mac/utdf /usr/local/bin
