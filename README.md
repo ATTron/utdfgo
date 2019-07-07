@@ -22,10 +22,19 @@ You can run the extraction functions with the returned utdf struct
 ## Using CLI
 Download latest release:
 Windows:
-Use the utdf.exe
+```
+    utdf.exe
+```
 Linux + Mac:
 ```
     make install-linux-mac
+    or
+    cp utdf /usr/local/bin
+```
+## Post Install
+```
+    utdf <-- prints help menu
+    utdf --filename test --run GetTimestamps --output utdf.txt
 ```
 
 # Functions
