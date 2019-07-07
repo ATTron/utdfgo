@@ -21,9 +21,10 @@ UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
 You can run the extraction functions with the returned utdf struct
 ## Using CLI
 Download latest release:
-and use latest release for your operating system
+Grab the binary for your operating system from inside 
+the release folder
 ## Using CLI from anywhere
-Currently only works on linux + macOS
+**Currently only works on linux + macOS
 #### Using Makefile
 ```
     make install-linux-mac
