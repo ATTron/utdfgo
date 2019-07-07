@@ -3,10 +3,11 @@
 UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
 
 # USAGE
+------------------------------------------------------------------
 ```
     go get "github.com/ATTron/utdfgo"
 ```
-------------------------------------------------------------------
+## Using utdfgo in GO programs
 ```
     import "github.com/ATTron/utdfgo"
 
@@ -18,6 +19,24 @@ UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
     }
 ```
 You can run the extraction functions with the returned utdf struct
+## Using CLI
+Download latest release:
+and use latest release for your operating system
+## Using CLI from anywhere
+Currently only works on linux + macOS
+#### Using Makefile
+```
+    make install-linux-mac
+```
+#### Using Binary
+```
+    cp utdf /usr/local/bin
+```
+## Post Install
+```
+    utdf <-- prints help menu
+    utdf --filename test --run GetTimestamps --output utdf.txt
+```
 
 # Functions
 
