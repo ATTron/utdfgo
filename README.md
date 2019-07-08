@@ -24,7 +24,7 @@ Download latest release:
 Grab the binary for your operating system from inside 
 the release folder
 ## Using CLI from anywhere
-**Currently only works on linux + macOS
+**Currently only works on linux + macOS**
 #### Using Makefile
 ```
     make install-linux
