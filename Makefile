@@ -1,16 +1,16 @@
-HOME_DIR = $(shell cd ~ && pwd)
-PATH = $$PATH:$(HOME_DIR)/bin
-.PHONY: create
+SHELL := /bin/bash
+.PHONY: deps create install-linux-global install-linux install-mac
 
 create:
-	cd ./utdf && \
-	GOOS=windows go build -o ../release/windows/utdf.exe && \
-	GOOS=linux go build -o ../release/linux/utdf && \
-	go build -o ../release/mac/utdf
+        cd ./utdf && \
+        GOOS=windows go build -o ../release/windows/utdf.exe && \
+        GOOS=linux go build -o ../release/linux/utdf && \
+        go build -o ../release/mac/utdf
 
 deps:
-	mkdir -p $(HOME_DIR)/bin
-	export PATH
+	mkdir -p ~/bin  && \
+	./release/scripts/setup.sh 
+	source ~/.bashrc
 
 install-linux-global:
 	cd ./release && \
@@ -18,7 +18,8 @@ install-linux-global:
 
 install-linux: deps
 	cd ./release && \
-	cp ./linux/utdf $(HOME_DIR)/bin
+	cp ./linux/utdf ~/bin
+        
 
 install-mac:
 	cd ./release && \
