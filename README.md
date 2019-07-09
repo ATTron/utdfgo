@@ -13,7 +13,10 @@ UTDFGO is a UTDF Spacecraft Packet Decoder Written In Golang
 
     . . .
 
-    utdf := utdfgo.Run(filename)
+    utdf, err := utdfgo.Run(filename)
+    if err != nil {
+      check(err)
+    }
     for _, p := range utdf {
         // run functions on p
     }
@@ -24,9 +27,11 @@ Download latest release:
 Grab the binary for your operating system from inside 
 the release folder
 ## Using CLI from anywhere
-**Currently only works on linux + macOS**
 #### Using Makefile
+Install global will make the CLI available to every user on the system
 ```
+    sudo make install-linux-global
+    OR
     make install-linux
 ```
 OR

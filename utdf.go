@@ -25,20 +25,21 @@ const bufferSize = 75
 type UTDF []byte
 
 // Run read in entire file then chunk into utdf packets
-func Run(filename string) []UTDF {
+func Run(filename string) ([]UTDF, error) {
 	var utdfArr []UTDF
 	utdfFile, err := ioutil.ReadFile(filename)
 	check(err)
-
 	for i := 0; i < len(utdfFile); i += bufferSize {
 		end := i + bufferSize
 		if end > len(utdfFile) {
 			end = len(utdfFile)
 		}
-
+		if err = checkUTDF(utdfFile[i:end]); err != nil {
+			return nil, ErrBadFile
+		}
 		utdfArr = append(utdfArr, utdfFile[i:end])
 	}
-	return utdfArr
+	return utdfArr, nil
 }
 
 // START TIME BASED FUNCTIONS
@@ -226,6 +227,19 @@ func (utdf UTDF) GetVID() uint64 {
 	n, err := strconv.ParseUint(vidE, 16, 16)
 	check(err)
 	return n
+}
+
+func (utdf UTDF) isValid() bool {
+	valid := true
+	defer func() {
+		if r := recover(); r != nil {
+			valid = false
+		}
+	}()
+	if utdf.GetYear() > time.Now().Year() {
+		valid = false
+	}
+	return valid
 }
 
 // ToString currently just used for testing correct return values

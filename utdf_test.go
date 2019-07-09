@@ -24,6 +24,7 @@ type UDTFPacket struct {
 var packet UDTFPacket
 
 const pl = 75
+const filename = "utdf_test_file"
 
 // build fake utdf packet for testing
 func TestBuildUTDF(t *testing.T) {
@@ -55,50 +56,77 @@ func TestBuildUTDF(t *testing.T) {
 		t.Fatal("Cannot package utdf packet")
 	}
 
-	err = ioutil.WriteFile("utdf", buf.Bytes(), 0644)
+	err = ioutil.WriteFile(filename, buf.Bytes(), 0644)
 	if err != nil {
 		t.Fatal("Cannot write packet to file")
 	}
 
 }
 
+// test if application can successfully ID it gets passed a non utdf file
+func TestUTDFValid(t *testing.T) {
+	t.Run("given unknown file", func(t *testing.T) {
+		if _, err := Run("utdf.go"); err == nil {
+			t.Error("expected error: got nil")
+		}
+	})
+}
+
 // ensure the first 13 bytes are correct
 func TestUTDFHeader(t *testing.T) {
-	p := Run("utdf")
-	op := p[0]
 
-	// make sure utdf packet is 75 bytes
-	if len(op) != pl {
-		t.Error("Packet in file not equal to", pl)
-	}
+	// test suite for header
+	t.Run("given utdf file", func(t *testing.T) {
+		p, _ := Run(filename)
+		op := p[0]
 
-	// packet year
-	if op.GetYear() != 2000+int(+packet.YY) {
-		t.Error("Unexpected Year:", op.GetYear())
-	}
+		// make sure utdf packet is 75 bytes
+		t.Run("checking utdf length", func(t *testing.T) {
+			if len(op) != pl {
+				t.Error("Packet in file not equal to", pl)
+			}
+		})
 
-	// packet router
-	if op[3] != packet.router1 && op[4] != packet.router2 {
-		t.Error("Unexpecting router:", op[3])
-	}
+		// packet year
+		t.Run("checking year", func(t *testing.T) {
+			if op.GetYear() != 2000+int(+packet.YY) {
+				t.Error("Unexpected Year:", op.GetYear())
+			}
+		})
 
-	// packet SIC
-	if op.GetSIC() != uint64(packet.sic) {
-		t.Error("Unexpected SIC:", op.GetSIC())
-	}
+		// packet router
+		t.Run("checking router", func(t *testing.T) {
+			if op[3] != packet.router1 && op[4] != packet.router2 {
+				t.Error("Unexpecting router:", op[3])
+			}
+		})
 
-	// packet VID
-	if op.GetVID() != uint64(packet.vid) {
-		t.Error("Unexpected VID:", op.GetVID())
-	}
+		// packet SIC
+		t.Run("checking SIC", func(t *testing.T) {
+			if op.GetSIC() != uint64(packet.sic) {
+				t.Error("Unexpected SIC:", op.GetSIC())
+			}
+		})
 
-	// packet seconds
-	if op.GetSeconds() != int(packet.scY) {
-		t.Error("Unexpected seconds of year:", op.GetSeconds())
-	}
+		// packet VID
+		t.Run("checking VID", func(t *testing.T) {
+			if op.GetVID() != uint64(packet.vid) {
+				t.Error("Unexpected VID:", op.GetVID())
+			}
+		})
 
-	// packet microseconds
-	if op.GetMicroseconds() != int(packet.mcS) {
-		t.Error("Unexpected microseconds:", op.GetMicroseconds())
-	}
+		// packet seconds
+		t.Run("checking seconds of year", func(t *testing.T) {
+			if op.GetSeconds() != int(packet.scY) {
+				t.Error("Unexpected seconds of year:", op.GetSeconds())
+			}
+		})
+
+		// packet microseconds
+		t.Run("checking microseconds", func(t *testing.T) {
+			if op.GetMicroseconds() != int(packet.mcS) {
+				t.Error("Unexpected microseconds:", op.GetMicroseconds())
+			}
+		})
+	})
 }

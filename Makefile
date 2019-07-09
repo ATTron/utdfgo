@@ -1,3 +1,5 @@
+HOME_DIR = $(shell cd ~ && pwd)
+PATH = $$PATH:$(HOME_DIR)/bin
 .PHONY: create
 
 create:
@@ -6,9 +8,17 @@ create:
 	GOOS=linux go build -o ../release/linux/utdf && \
 	go build -o ../release/mac/utdf
 
-install-linux:
+deps:
+	mkdir -p $(HOME_DIR)/bin
+	export PATH
+
+install-linux-global:
 	cd ./release && \
 	cp ./linux/utdf /usr/local/bin
+
+install-linux: deps
+	cd ./release && \
+	cp ./linux/utdf $(HOME_DIR)/bin
 
 install-mac:
 	cd ./release && \

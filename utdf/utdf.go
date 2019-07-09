@@ -22,7 +22,10 @@ func main() {
 		os.Exit(0)
 	}
 	// run commands and output to file if requested
-	utdf := utdfgo.Run(*fname)
+	utdf, err := utdfgo.Run(*fname)
+	if err != nil {
+		log.Fatal("Unable to process:", err)
+	}
 	for i, p := range utdf {
 		cmd := reflect.ValueOf(p).MethodByName(*rcall)
 		output := cmd.Call([]reflect.Value{})
