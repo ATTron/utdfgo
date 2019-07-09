@@ -2,10 +2,10 @@ SHELL := /bin/bash
 .PHONY: deps create install-linux-global install-linux install-mac
 
 create:
-        cd ./utdf && \
-        GOOS=windows go build -o ../release/windows/utdf.exe && \
-        GOOS=linux go build -o ../release/linux/utdf && \
-        go build -o ../release/mac/utdf
+	cd ./utdf && \
+	GOOS=windows go build -o ../release/windows/utdf.exe && \
+	GOOS=linux go build -o ../release/linux/utdf && \
+	go build -o ../release/mac/utdf
 
 deps:
 	mkdir -p ~/bin  && \
