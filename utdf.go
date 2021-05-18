@@ -44,8 +44,8 @@ func Run(filename string) ([]UTDF, error) {
 
 // START TIME BASED FUNCTIONS
 
-// GetYear gets last two digits of current year
 // taken from byte 6
+// GetYear gets last two digits of current year
 func (utdf UTDF) GetYear() int {
 	year := int(utdf[5])
 	if year < 70 {
@@ -56,15 +56,15 @@ func (utdf UTDF) GetYear() int {
 	return year
 }
 
-// GetSeconds get seconds of year
 // taken from bytes 11:14
+// GetSeconds get seconds of year
 func (utdf UTDF) GetSeconds() int {
 	scY := (int(utdf[10]) << 24) + (int(utdf[11]) << 16) + (int(utdf[12]) << 8) + int(utdf[13])
 	return scY
 }
 
-// GetMicroseconds get microseconds of seconds
 // taken from bytes 15:18
+// GetMicroseconds get microseconds of seconds
 func (utdf UTDF) GetMicroseconds() int {
 	mcS := (int(utdf[14]) << 24) + (int(utdf[15]) << 16) + (int(utdf[16]) << 8) + int(utdf[17])
 	return mcS
@@ -86,16 +86,16 @@ func (utdf UTDF) GetTimestamps() string {
 
 // START ANGLE + ELEVATION BASED FUNCTIONS
 
-// GetAzimuth get angle_data[0] and calculate azimuth
 // taken from bytes 19:22
+// GetAzimuth get angle_data[0] and calculate azimuth
 func (utdf UTDF) GetAzimuth() float64 {
 	azi := (int(utdf[18]) << 24) + (int(utdf[19]) << 16) + (int(utdf[20]) << 8) + int(utdf[21])
 	aAngle := calculateAngle(azi)
 	return aAngle
 }
 
-// GetElevation get angle_data[1] and calculate elevation
 // taken from bytes 23-26
+// GetElevation get angle_data[1] and calculate elevation
 func (utdf UTDF) GetElevation() float64 {
 	e := (int(utdf[22]) << 24) + (int(utdf[23]) << 16) + (int(utdf[24]) << 8) + int(utdf[25])
 	eAngle := calculateAngle(e)
@@ -138,72 +138,72 @@ func (utdf UTDF) GetDoppler() float64 {
 
 // START MISC FUNCTIONS
 
-// GetAGC get AGC
 // taken from bytes 39:40
+// GetAGC get AGC
 func (utdf UTDF) GetAGC() float32 {
 	agc := (int(utdf[38]) << 8) + int(utdf[39])
 	return float32(agc)
 }
 
-// GetTransmitFreq get transmit frequency
 // taken from bytes 41:44
+// GetTransmitFreq get transmit frequency
 func (utdf UTDF) GetTransmitFreq() string {
 	tf := (int(utdf[40]) << 24) + (int(utdf[41]) << 16) + (int(utdf[42]) << 8) + int(utdf[43])
 	hz := float64(tf) * 10
 	return fmt.Sprintf("%1.10v", hz)
 }
 
-// GetAntennaType get antenna type
 // taken from byte 45
+// GetAntennaType get antenna type
 func (utdf UTDF) GetAntennaType() byte {
 	at := utdf[44]
 	return at
 }
 
-// GetPADID get antenna padid
 // taken from byte 46
+// GetPADID get antenna padid
 func (utdf UTDF) GetPADID() int8 {
 	pid := utdf[45]
 	return int8(pid)
 }
 
-// GetRecieveAntennaType get receive antenna type
 // taken from byte 47
+// GetRecieveAntennaType get receive antenna type
 func (utdf UTDF) GetRecieveAntennaType() byte {
 	at := utdf[46]
 	return at
 }
 
-// GetRecievePADID get receive antenna padid
 // taken from byte 48
+// GetRecievePADID get receive antenna padid
 func (utdf UTDF) GetRecievePADID() int8 {
 	pid := utdf[45]
 	return int8(pid)
 }
 
-// GetSystemMode get system mode
 // taken from bytes 49:50
+// GetSystemMode get system mode
 func (utdf UTDF) GetSystemMode() int {
 	m := (int(utdf[48]) << 8) + int(utdf[49])
 	return m
 }
 
-// GetDataValidation get data validity
 // taken from byte 51
+// GetDataValidation get data validity
 func (utdf UTDF) GetDataValidation() byte {
 	dv := utdf[50]
 	return dv
 }
 
-// GetFrequencyBand get frequency band
 // taken from byte 52
+// GetFrequencyBand get frequency band
 func (utdf UTDF) GetFrequencyBand() byte {
 	fb := utdf[51]
 	return fb
 }
 
-// GetTrackingInfo get tracking type and data
 // taken from bytes 53:54
+// GetTrackingInfo get tracking type and data
 func (utdf UTDF) GetTrackingInfo() int {
 	ti := (int(utdf[52]) << 8) + int(utdf[53])
 	return ti
